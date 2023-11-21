@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>webgazer.js Demo with Gaze Visualization</title>
+    <script src="https://webgazer.cs.brown.edu/webgazer.js"></script>
+</head>
+<body>
+    <h1>webgazer.js Demo with Gaze Visualization</h1>
+
+    <!-- 視線を表示するための点を配置するdiv要素 -->
+    <div id="gaze-point" style="width: 10px; height: 10px; background-color: red; position: absolute;"></div>
+
+    <script>
+        // 視線の位置を更新する関数
+        function updateGazePoint(x, y) {
+            var gazePoint = document.getElementById('gaze-point');
+            gazePoint.style.left = x + 'px';
+            gazePoint.style.top = y + 'px';
+        }
+
+        // webgazer.jsの初期化
+        webgazer.setGazeListener(function(data, elapsedTime) {
+            if (data == null) {
+                return;
+            }
+            
+            // 視線データをコンソールに表示
+            console.log(data);
+
+            // 視線の位置に点を表示
+            var x = data.x; // 視線のX座標
+            var y = data.y; // 視線のY座標
+            updateGazePoint(x, y);
+        }).begin();
+
+        // キャリブレーションのポイントを表示
+        webgazer.showPredictionPoints(true);
+        webgazer.showCalibrationPoints(true);
+
+        // キャリブレーションを開始
+        webgazer.beginCalibration();
+
+        // キャリブレーションが完了したときの処理
+        webgazer.setGazeListener(function(data, elapsedTime) {
+            if (webgazer.getTracker().getIsCalibrated()) {
+                console.log("Calibration complete!");
+                // 他の処理を追加することができます
+            }
+        });
+    </script>
+</body>
+</html>
